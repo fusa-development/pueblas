@@ -44,9 +44,7 @@ class altas():
 		descripcion=self.entry_descripcion.get_text()
 		marca=self.entry_marca.get_text()
 		costo=float (self.entry_costo.get_text() )
-		print "aca"
 		if self.verificar_marca(marca):
-			print "ahora aca"
 			precio= round(costo*( 1+self.ganancia/100),1)
 			ruta = os.getcwd()
 			bbdd=bdapi.connect(ruta+'/Base_Datos/bd_stock.db')
@@ -58,7 +56,6 @@ class altas():
 			self_padre.liststore.append( [int(codigo),descripcion,marca,costo,precio,0,0,False] )
 			question(self,self_padre)
 		else:
-			print "ahora aca2"
 			nueva_marca(self,self_padre)
 
 	def validar_codigo(self,widget,liststore):

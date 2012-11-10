@@ -45,7 +45,6 @@ class bajas():
 		self.btn_ok.connect("clicked",self.press_btn_ok,self_padre,)
 		self.btn_no.connect("clicked",self.press_btn_no,self_padre.window)
 		self.window.connect("delete-event",self.delete_event,self_padre.window)
-		print self_padre.datos_seleccionados
 		self.entry_codigo.set_text(str(self_padre.datos_seleccionados[0]))
 		self.entry_descripcion.set_text(self_padre.datos_seleccionados[1])
 		self.entry_marca.set_text(self_padre.datos_seleccionados[2])

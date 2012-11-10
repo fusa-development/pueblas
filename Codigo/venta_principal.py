@@ -14,6 +14,20 @@ from altas.agregar_marca_en_main import nueva_marca
 
 class principal() :
 
+	
+	def abrir_recordatorios(self):
+		archivo=open("recordatorios.txt","r")
+		linea=archivo.read()
+		self.textbuffer.set_text(str(linea))
+		archivo.close()
+
+	def guardar_recordatorios(self):
+		archivo=open("recordatorios.txt","w")
+		start,end=self.textbuffer.get_bounds()
+		texto=self.textbuffer.get_text(start,end)
+		archivo.write(texto)
+		archivo.close()
+		
 	def conectar_bd(self):
 		bbdd=bdapi.connect('./Base_Datos/bd_stock.db')
 		cursor=bbdd.cursor()
@@ -104,9 +118,11 @@ class principal() :
 		self.window.set_title("Gestion de Productos")
 
 	def cerrar(self,widget):
+		self.guardar_recordatorios()
 		gtk.main_quit()
 
 	def delete_event(self,widget,event):
+		self.guardar_recordatorios()
 		gtk.main_quit()
 
 	def __init__(self):
@@ -116,6 +132,8 @@ class principal() :
 		self.glade.add_from_file(self.archivo_glade)
 		self.window = self.glade.get_object("window_main")
 		self.notebook = self.glade.get_object("notebook_principal")
+		self.textview_recordatorio=self.glade.get_object("textview_recordatorios")
+		self.textbuffer = self.textview_recordatorio.get_buffer()
 
 ####################################BOTONES################################
 		self.btn_actualizar = self.glade.get_object("actualizar_producto")
@@ -141,6 +159,7 @@ class principal() :
 		self.treeview = self.glade.get_object("treeview")
 		self.liststore = self.glade.get_object("liststore")
 		self.conectar_bd()
+		self.abrir_recordatorios()
 ############################CONECTANDO SEÑALES#############################
 		self.window.connect("key-press-event",self.teclas)
 		self.window.connect("delete_event",self.delete_event)

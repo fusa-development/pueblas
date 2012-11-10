@@ -70,9 +70,17 @@ class actualizaciones():
 		
 		if entry == "aumento marca":
 			texto = self.entry_aumento_marca.get_text()
-			if es_int(texto) or texto == "":
+			if es_int(texto):
 				self.entry_aumento_marca.set_icon_from_stock(1,gtk.STOCK_APPLY)
 				self.entry_aumento_marca.set_property("secondary-icon-tooltip-text",None)
+				self.pagina1[0] = True
+				texto2 = self.entry_ganancia.get_text()
+				if not False in self.pagina1 and (texto2 != "" or texto != ""):
+					print self.pagina1
+					self.btn_aceptar.set_sensitive(True)
+				else:
+					self.btn_aceptar.set_sensitive(False)
+			elif texto == "":
 				self.pagina1[0] = True
 				texto2 = self.entry_ganancia.get_text()
 				if not False in self.pagina1 and (texto2 != "" or texto != ""):
@@ -87,9 +95,14 @@ class actualizaciones():
 				self.btn_aceptar.set_sensitive(False)
 		elif entry == "aumento":
 			texto = self.entry_aumento.get_text()
-			if es_int(texto) or texto == "":
+			if es_int(texto):
 				self.entry_aumento.set_icon_from_stock(1,gtk.STOCK_APPLY)
 				self.entry_aumento.set_property("secondary-icon-tooltip-text",None)
+				self.pagina2[0] = True
+				if not False in self.pagina2:
+					print self.pagina2
+					self.btn_aceptar.set_sensitive(True)
+			elif texto == "":
 				self.pagina2[0] = True
 				if not False in self.pagina2:
 					print self.pagina2
@@ -101,9 +114,17 @@ class actualizaciones():
 				self.btn_aceptar.set_sensitive(False)
 		else:
 			texto = self.entry_ganancia.get_text()
-			if es_int(texto) or texto == "":
+			if es_int(texto):
 				self.entry_ganancia.set_icon_from_stock(1,gtk.STOCK_APPLY)
 				self.entry_ganancia.set_property("secondary-icon-tooltip-text",None)
+				self.pagina1[1] = True
+				texto2 = self.entry_ganancia.get_text()
+				if not False in self.pagina1 and (texto2 != "" or texto != ""): 
+					print self.pagina1
+					self.btn_aceptar.set_sensitive(True)
+				else:
+					self.btn_aceptar.set_sensitive(False)
+			elif texto == "":
 				self.pagina1[1] = True
 				texto2 = self.entry_ganancia.get_text()
 				if not False in self.pagina1 and (texto2 != "" or texto != ""): 
@@ -139,11 +160,10 @@ class actualizaciones():
 		bbdd.close()
 		
 	def validar_codigo(self,widget,event = None):
+		ruta = os.getcwd()
 		codigo = self.entry_codigo.get_text()
 		marca = self.entry_marcas.get_text()
-		filtro = self.combobox_producto.get_active_text()
-		filtro = filtro.replace(" ","_")
-		bbdd=bdapi.connect('../Base_Datos/bd_stock.db')
+		bbdd=bdapi.connect(ruta+'/Base_Datos/bd_stock.db')
 		cursor=bbdd.cursor()
 		cursor.execute("SELECT * FROM bd_stock WHERE codigo=? AND marca=?",(codigo,marca))
 		self.tupla = cursor.fetchall()
@@ -156,11 +176,10 @@ class actualizaciones():
 			self.checkbutton_reponer.set_sensitive(True)
 			self.entry_codigo.set_icon_from_stock(1,gtk.STOCK_APPLY)
 			self.entry_codigo.set_property("secondary-icon-tooltip-text","")
-			if self.tupla[0][10]:
+			if self.tupla[0][9]:
 				self.checkbutton_reponer.set_active(1)
 			else:
 				self.checkbutton_reponer.set_active(0)
-			self.tupla.append("bazar")
 			self.entry_aumento.set_property("is-focus",1)
 			print self.tupla
 			self.pagina2[1] = True
@@ -175,7 +194,6 @@ class actualizaciones():
 			return None
 	
 	def recargar_listas(self,self_padre,cursor):
-		
 			cursor.execute("SELECT * FROM bd_stock")
 			self_padre.liststore.clear()
 			for tupla in cursor.fetchall():
@@ -196,7 +214,8 @@ class actualizaciones():
 			cursor=bbdd.cursor()
 			cursor.execute("SELECT costo,precio,codigo FROM bd_stock WHERE marca = ?",[self.values[2]])
 			for tupla in cursor.fetchall():
-				precio = tupla[3]*(1+float(self.values[1])/100)
+				print tupla
+				precio = tupla[0]*(1+float(self.values[1])/100)
 				cursor.execute("UPDATE bd_stock SET precio =? WHERE codigo =?",(precio,tupla[1]))
 			bbdd.commit()
 			self.recargar_listas(self_padre,cursor)
@@ -225,7 +244,7 @@ class actualizaciones():
 			cursor=bbdd.cursor()
 			cursor.execute("SELECT costo,codigo FROM bd_stock WHERE marca = ?",[self.values[2]])
 			for tupla in cursor.fetchall():
-				costo = tupla[3]*(1+float(self.values[0])/100)
+				costo = tupla[0]*(1+float(self.values[0])/100)
 				precio = costo*(1+float(self.values[1])/100)
 				cursor.execute("UPDATE bd_stock SET costo =?, precio =? WHERE codigo =?",(costo,precio,tupla[1]))
 			bbdd.commit()
@@ -239,26 +258,26 @@ class actualizaciones():
 		cantidad_entrante= self.entry_cantidad.get_text()
 		pnt_rep = int(self.entry_pnt_rep.get_text())
 		reponer = self.checkbutton_reponer.get_active()
-		codigo = self.entry_codigo.get_text()#se llama codigo, pero tmb puede ir el nro art
+		codigo = self.entry_codigo.get_text()
 		marca = self.entry_marcas.get_text()
 		ruta = os.getcwd()
 		self.tupla = self.tupla[0]
 		if aumento != "":
-			bbdd=bdapi.connect(ruta[0:-6]+'Base_Datos/bd_marcas.db')
+			bbdd=bdapi.connect(ruta+'/Base_Datos/bd_marcas.db')
 			cursor=bbdd.cursor()
-			cursor.execute("SELECT coeficiente FROM marca WHERE nombre =?",[self.tupla[4]])
+			cursor.execute("SELECT coeficiente FROM marca WHERE nombre =?",(marca,))
 			ganancia = cursor.fetchone()
-			bbdd=bdapi.connect(ruta[0:-6]+'Base_Datos/bd_stock.db')
+			bbdd=bdapi.connect(ruta+'/Base_Datos/bd_stock.db')
 			cursor=bbdd.cursor()
-			costo = self.tupla[5]*(1+float(aumento)/100)
-			precio = costo*(1+ganancia[0]/100)
+			costo = self.tupla[4]*(1+float(aumento)/100)
+			precio = round(costo*(1+ganancia[0]/100),1)
 			cursor.execute("UPDATE bd_stock SET costo =? , precio =?, sw =? WHERE codigo =? and marca =?",(costo,precio,reponer,codigo,marca))
 			bbdd.commit()
 			cursor.close()
 			bbdd.close()
 		if cantidad_entrante != "0":
-			cantidad_total = int(cantidad_entrante)+self.tupla[7]
-			bbdd=bdapi.connect(ruta[0:-6]+'Base_Datos/bd_stock.db')
+			cantidad_total = int(cantidad_entrante)+self.tupla[6]
+			bbdd=bdapi.connect(ruta+'/Base_Datos/bd_stock.db')
 			cursor=bbdd.cursor()
 			if cantidad_total < self.tupla[7] and reponer:
 				cursor.execute("UPDATE bd_stock SET stk_disp =?, aviso =?, sw =? WHERE codigo =? AND marca =?",(cantidad_total,True,reponer,codigo,marca))
@@ -268,7 +287,7 @@ class actualizaciones():
 			cursor.close()
 			bbdd.close()
 		if pnt_rep != "0":
-			bbdd=bdapi.connect(ruta[0:-6]+'Base_Datos/bd_stock.db')
+			bbdd=bdapi.connect(ruta+'/Base_Datos/bd_stock.db')
 			cursor=bbdd.cursor()
 			if self.tupla[6] < pnt_rep and reponer:
 				cursor.execute("UPDATE bd_stock SET pnt_rep =?, aviso =?, sw =? WHERE codigo =? AND marca =?",(pnt_rep,True,reponer,codigo,marca))
@@ -343,6 +362,7 @@ class actualizaciones():
 		self.entry_codigo.connect("activate",self.validar_codigo)
 		self.entry_codigo.connect("focus-out-event",self.validar_codigo)
 		self.entry_aumento.connect("focus-out-event",self.validar_entero,"aumento")
+		self.entry_aumento.connect("activate",self.validar_entero,None,"aumento")
 		self.entry_ganancia.connect("focus-out-event",self.validar_entero,"ganancia")
 		self.entry_ganancia.connect("activate",self.validar_entero,None,"ganancia")
 		self.entry_aumento_marca.connect("focus-out-event",self.validar_entero,"aumento marca")

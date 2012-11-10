@@ -35,11 +35,13 @@ class modificaciones():
 		self_padre.liststore.set_value(iter,3,float(self.entry_costo.get_text()) )
 		if self.ganancia == 0:
 			self.validar_marca(marca)
-		print float(self.entry_costo.get_text())*float(1+self.ganancia/100)
+		"""print float(self.entry_costo.get_text())*float(1+self.ganancia/100)
 		print float(self.entry_costo.get_text())
 		print (1+float(self.ganancia)/100)
-		print self.ganancia
-		self_padre.liststore.set_value(iter,4,float(self.entry_costo.get_text())*float(1+self.ganancia/100) )
+		print self.ganancia"""
+		precio = float(self.entry_costo.get_text())*float(1+self.ganancia/100)
+		precio = round(precio,1)
+		self_padre.liststore.set_value(iter,4,precio)
 		self.window.destroy()
 
 	def validar_codigo(self,widget):
@@ -97,7 +99,6 @@ class modificaciones():
 	def desbloquear_aceptar(self,widget):
 		self.btn_ok.set_sensitive(False)
 		if self.marca_ok and self.descripcion_ok and self.costo_ok:
-			#1 bien y la otra vacia o las 2 bien
 			if self.codigo_ok:
 				self.btn_ok.set_sensitive(True)
 

@@ -39,10 +39,22 @@ class nueva_marca:
 		bbdd.close()
 		self_altas.window.set_sensitive(True)
 		self.window.destroy()
-
 		self.agregar_producto(self_altas,self_padre)
-
 		question(self_altas,self_padre)
+
+	def controlar_marca(self):
+		marca=self.entry_marca.get_text()
+		ruta = os.getcwd()
+		bbdd=bdapi.connect(ruta+'/Base_Datos/bd_marcas.db')
+		cursor=bbdd.cursor()
+		cursor.execute("SELECT nombre FROM marca WHERE nombre=?",(marca,)  )
+		valor=cursor.fetchone()
+		cursor.close()
+		bbdd.close()
+		if valor == None:
+			return True
+		else:
+			return False
 
 	def aceptar_with_enter(self,widget,event,self_altas,self_padre):
 		if event.keyval ==gtk.keysyms.Return:
@@ -61,8 +73,12 @@ class nueva_marca:
 		self.marca_ok=False
 		marca=self.entry_marca.get_text()
 		if caracteres_validos(marca) and marca != "":
-			self.entry_marca.set_icon_from_stock(1,gtk.STOCK_APPLY)
-			self.marca_ok=True
+			if controlar_marca(marca):
+				self.entry_marca.set_icon_from_stock(1,gtk.STOCK_APPLY)
+				self.marca_ok=True
+			else:
+				self.entry_marca.set_icon_from_stock(1,gtk.STOCK_DIALOG_ERROR)
+				self.entry_marca.set_property("secondary-icon-tooltip-text","Marca Repetida")
 		else:
 			self.entry_marca.set_icon_from_stock(1,gtk.STOCK_DIALOG_ERROR)
 
