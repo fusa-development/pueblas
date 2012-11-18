@@ -21,14 +21,9 @@ class control():
 		else:
 			cursor.execute("SELECT * FROM bd_stock")
 			tupla_resultado = cursor.fetchall()
-<<<<<<< HEAD
-			for tupla in tupla_resultado:
-				self.liststore.append([int(tupla[1]),tupla[2],tupla[3],tupla[5],tupla[6],tupla[7],tupla[8]])
-=======
 			if tupla_resultado != []:
 				for tupla in tupla_resultado:
 					self.liststore.append([int(tupla[1]),tupla[2],tupla[3],tupla[5],tupla[6],tupla[7],tupla[8]])
->>>>>>> develop
 
 	def desbloquear_entry(self,widget):
 		self.entry_filtro.set_sensitive(True)
