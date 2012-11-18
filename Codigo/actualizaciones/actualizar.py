@@ -76,7 +76,13 @@ class actualizaciones():
 				self.pagina1[0] = True
 				texto2 = self.entry_ganancia.get_text()
 				if not False in self.pagina1 and (texto2 != "" or texto != ""):
-					print self.pagina1
+					self.btn_aceptar.set_sensitive(True)
+				else:
+					self.btn_aceptar.set_sensitive(False)
+			elif texto == "":
+				self.pagina1[0] = True
+				texto2 = self.entry_ganancia.get_text()
+				if not False in self.pagina1 and (texto2 != "" or texto != ""):
 					self.btn_aceptar.set_sensitive(True)
 				else:
 					self.btn_aceptar.set_sensitive(False)
@@ -163,6 +169,10 @@ class actualizaciones():
 		ruta = os.getcwd()
 		codigo = self.entry_codigo.get_text()
 		marca = self.entry_marcas.get_text()
+<<<<<<< HEAD
+=======
+		ruta = os.getcwd()
+>>>>>>> develop
 		bbdd=bdapi.connect(ruta+'/Base_Datos/bd_stock.db')
 		cursor=bbdd.cursor()
 		cursor.execute("SELECT * FROM bd_stock WHERE codigo=? AND marca=?",(codigo,marca))
@@ -210,26 +220,30 @@ class actualizaciones():
 			cursor=bbdd.cursor()
 			cursor.execute("UPDATE marca SET coeficiente =? WHERE nombre =?",(self.values[1],self.values[2]))
 			bbdd.commit()
-			bbdd=bdapi.connect(ruta+'Base_Datos/bd_stock.db')
+			bbdd=bdapi.connect(ruta+'/Base_Datos/bd_stock.db')
 			cursor=bbdd.cursor()
 			cursor.execute("SELECT costo,precio,codigo FROM bd_stock WHERE marca = ?",[self.values[2]])
 			for tupla in cursor.fetchall():
+<<<<<<< HEAD
 				print tupla
 				precio = tupla[0]*(1+float(self.values[1])/100)
 				cursor.execute("UPDATE bd_stock SET precio =? WHERE codigo =?",(precio,tupla[1]))
+=======
+				precio = round(tupla[0]*(1+float(self.values[1])/100),1)
+				cursor.execute("UPDATE bd_stock SET precio =? WHERE codigo =?",(precio,tupla[2]))
+>>>>>>> develop
 			bbdd.commit()
 			self.recargar_listas(self_padre,cursor)
 		elif self.values[0] != "" and self.values[1] == "" :
 			ruta = os.getcwd()
 			bbdd=bdapi.connect(ruta+'/Base_Datos/bd_marcas.db')
 			cursor=bbdd.cursor()
-			cursor.execute("SELECT coeficiente FROM marca WHERE nombre =?",[self.values[2]])
+			cursor.execute("SELECT coeficiente FROM marca WHERE nombre =?",(self.values[2],))
 			ganancia = cursor.fetchone()
 			bbdd=bdapi.connect(ruta+'/Base_Datos/bd_stock.db')
 			cursor=bbdd.cursor()
-			cursor.execute("SELECT costo,codigo FROM bd_stock WHERE marca = ?",[self.values[2]])
+			cursor.execute("SELECT costo,codigo FROM bd_stock WHERE marca = ?",(self.values[2],))
 			for tupla in cursor.fetchall():
-				print tupla
 				costo = tupla[0]*(1+float(self.values[0])/100)
 				precio = round(costo*(1+ganancia[0]/100),1)
 				cursor.execute("UPDATE bd_stock SET costo =?, precio =? WHERE codigo =?",(costo,precio,tupla[1]))
@@ -244,8 +258,13 @@ class actualizaciones():
 			cursor=bbdd.cursor()
 			cursor.execute("SELECT costo,codigo FROM bd_stock WHERE marca = ?",[self.values[2]])
 			for tupla in cursor.fetchall():
+<<<<<<< HEAD
 				costo = tupla[0]*(1+float(self.values[0])/100)
 				precio = costo*(1+float(self.values[1])/100)
+=======
+				costo = tupla[3]*(1+float(self.values[0])/100)
+				precio = round(costo*(1+float(self.values[1])/100),1)
+>>>>>>> develop
 				cursor.execute("UPDATE bd_stock SET costo =?, precio =? WHERE codigo =?",(costo,precio,tupla[1]))
 			bbdd.commit()
 			self.recargar_listas(self_padre,cursor)
@@ -267,16 +286,27 @@ class actualizaciones():
 			cursor=bbdd.cursor()
 			cursor.execute("SELECT coeficiente FROM marca WHERE nombre =?",(marca,))
 			ganancia = cursor.fetchone()
+<<<<<<< HEAD
 			bbdd=bdapi.connect(ruta+'/Base_Datos/bd_stock.db')
 			cursor=bbdd.cursor()
 			costo = self.tupla[4]*(1+float(aumento)/100)
+=======
+			print ganancia
+			bbdd=bdapi.connect(ruta+'/Base_Datos/bd_stock.db')
+			cursor=bbdd.cursor()
+			costo = self.tupla[5]*(1+float(aumento)/100)
+>>>>>>> develop
 			precio = round(costo*(1+ganancia[0]/100),1)
 			cursor.execute("UPDATE bd_stock SET costo =? , precio =?, sw =? WHERE codigo =? and marca =?",(costo,precio,reponer,codigo,marca))
 			bbdd.commit()
 			cursor.close()
 			bbdd.close()
 		if cantidad_entrante != "0":
+<<<<<<< HEAD
 			cantidad_total = int(cantidad_entrante)+self.tupla[6]
+=======
+			cantidad_total = int(cantidad_entrante)+self.tupla[7]
+>>>>>>> develop
 			bbdd=bdapi.connect(ruta+'/Base_Datos/bd_stock.db')
 			cursor=bbdd.cursor()
 			if cantidad_total < self.tupla[7] and reponer:
