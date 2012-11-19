@@ -25,20 +25,6 @@ class nueva_marca:
 		self.window.destroy()
 
 
-	def controlar_marca(self,marca):
-		ruta = os.getcwd()
-		bbdd=bdapi.connect(ruta+'/Base_Datos/bd_marcas.db')
-		cursor=bbdd.cursor()
-		cursor.execute("SELECT nombre FROM marca WHERE nombre =?",(marca,))
-		tupla = cursor.fetchone()
-		print tupla
-		if tupla == None:
-			return True
-		else:
-			return False
-		cursor.close()
-		bbdd.close()
-		
 	def aceptar_with_enter(self,widget,event,self_padre):
 		if event.keyval ==gtk.keysyms.Return:
 			self.add_marca(None,self_padre)
